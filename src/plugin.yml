@@ -1,0 +1,9 @@
+name: MiniAnnihilation
+author: 7024w
+main: main.MA
+description: A minigame based on Annihilation
+version: 1.0
+commands:
+  MA:
+    usage: /<command>
+    permission: MA.admin
