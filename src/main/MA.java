@@ -18,7 +18,7 @@ public class MA extends JavaPlugin {
         saveDefaultConfig();
         GameManager.checkWhenToRun();
         GameManager.setandupdateprimaryboard();
-        getCommand("MA").setExecutor(new main.command.gameSet());
+//        getCommand("MA").setExecutor(new main.command.gameSet());
         getServer().getPluginManager().registerEvents(new playerjoinquit(),this);
         getServer().getPluginManager().registerEvents(new blockbreakevent(),this);
         getServer().getPluginManager().registerEvents(new playerinteractevent(),this);
