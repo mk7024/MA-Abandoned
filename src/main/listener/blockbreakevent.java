@@ -23,8 +23,7 @@ public class blockbreakevent implements Listener {
 
                 }
             }
-            b.setCancelled(true);
-        }
+        }else b.setCancelled(true);
     }
 
     public void restore(Block b,Material material, int time){

@@ -15,22 +15,18 @@ public class GameManager {
     private static short state= 0;
     private static short maxplayersperteam = 8;
     private static short minplayersonline = 1;
-    private static short phase1;
+    private static short phase1time = 300;
+    private static int redteamhealth,yellowteamhealth,greenteamhealth,blueteamhealth;
 
     public static void checkWhenToRun(){
         new BukkitRunnable(){
             @Override
             public void run(){
                 if(GameManager.getState() == 0){
-                    short minplayers = 1;
-                    for(Player p : Bukkit.getServer().getOnlinePlayers()){
-                        short temp = 0;
-                        temp += 1;
-                        if(temp >= minplayers){
+                    if(Bukkit.getServer().getOnlinePlayers().size() >= minplayersonline){
                             System.out.println("游戏可以启动");
                             countToStart();
                             cancel();
-                        }
                     }
 
                 }else {
@@ -40,6 +36,25 @@ public class GameManager {
         }.runTaskTimer(MA.getInstance(),0,20);
     }
 
+    private static void setDefaultHealth(){
+        redteamhealth = blueteamhealth = yellowteamhealth = greenteamhealth = MA.getInstance().getConfig().getInt("defaulthealth");
+    }
+
+    public static void setHealth(int health,TeamType type){
+        if(type.toString().equalsIgnoreCase("GREEN")){
+            greenteamhealth += health;
+        }
+        if(type.toString().equalsIgnoreCase("BLUE")){
+            blueteamhealth += health;
+        }
+        if(type.toString().equalsIgnoreCase("RED")){
+            redteamhealth += health;
+        }
+        if(type.toString().equalsIgnoreCase("YELLOW")){
+            yellowteamhealth += health;
+        }
+    }
+
     public static void sendTitleToAllPlayers(String s1,String s2,int i1,int i2,int i3){
         for(Player player : Bukkit.getServer().getOnlinePlayers()){
             player.sendTitle(s1,s2,i1,i2,i3);
@@ -47,18 +62,24 @@ public class GameManager {
     }
 
     public static void startPhase1(){
-//        state = 1;
+        state = 1;
         for(Player player : Bukkit.getServer().getOnlinePlayers()){
             if(!TeamManager.isInTeam(player)){
                 TeamManager.startToBalanceTeamPlayer(player);
             }
-
         }
+        countPhase1();
+        setDefaultHealth();
+        setphase1board();
     }
 
-    public static void countToStart(){
+    public static void startPhase2(){
+        state = 2;
+    }
+
+    private static void countToStart(){
         new BukkitRunnable(){
-            int timetocount = 31;
+            int timetocount = 15;
             @Override
             public void run(){
                 timetocount -= 1;
@@ -91,6 +112,8 @@ public class GameManager {
                 }
                 if(timetocount == 1){
                     sendTitleToAllPlayers(ChatColor.GREEN + "1","",5,10,5);
+                }
+                if(timetocount == 0){
                     startPhase1();
                     cancel();
                 }
@@ -104,21 +127,58 @@ public class GameManager {
         return state;
     }
 
+    public static void setphase1board(){
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (getState() == 1) {
+                    for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+                        ScoreHelper helper = ScoreHelper.createScore(player);
+                        helper.setTitle("Mini Annihilation");
+                        int time = phase1time;
+                        int min = time/60;
+                        int sec = (time - time/60*60)%60;
+                        helper.setSlot(5, "&a阶段1时间:" + ChatColor.RESET + min + ":" + sec);
+                        helper.setSlot(4, "&a红队:" + ChatColor.RESET + redteamhealth);
+                        helper.setSlot(3, "&a蓝队:" + ChatColor.RESET+ blueteamhealth);
+                        helper.setSlot(2, "&a黄队:" + ChatColor.RESET+ yellowteamhealth);
+                        helper.setSlot(1, "&a绿队:"+ ChatColor.RESET + greenteamhealth);
+                    }
+                }else cancel();
+            }
+        }.runTaskTimer(MA.getInstance(),0,20);
+    }
+
+    private static void countPhase1(){
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                phase1time -= 1;
+                if(phase1time == 0){
+                    startPhase2();
+                    cancel();
+                }
+            }
+        }.runTaskTimer(MA.getInstance(),0,20);
+    }
+
     public static void setandupdateprimaryboard() {
         new BukkitRunnable() {
             @Override
             public void run() {
-                for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                    ScoreHelper helper = ScoreHelper.createScore(player);
-                    helper.setTitle("Mini Annihilation");
-                    helper.setSlot(5, "&7玩家:" + "&e" + Bukkit.getServer().getOnlinePlayers().size() + "/24");
-                    helper.setSlot(4, "&a红队:" + TeamManager.getTeamSize(RED));
-                    helper.setSlot(3, "&a蓝队:" + TeamManager.getTeamSize(BLUE));
-                    helper.setSlot(2, "&a黄队:" + TeamManager.getTeamSize(YELLOW));
-                    helper.setSlot(1, "&a绿队:" + TeamManager.getTeamSize(GREEN));
-                }
+                if (getState() == 0) {
+                    for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+                        ScoreHelper helper = ScoreHelper.createScore(player);
+                        helper.setTitle("Mini Annihilation");
+                        helper.setSlot(5, "&7玩家:" + "&e" + Bukkit.getServer().getOnlinePlayers().size() + "/24");
+                        helper.setSlot(4, "&a红队:" + TeamManager.getTeamSize(RED));
+                        helper.setSlot(3, "&a蓝队:" + TeamManager.getTeamSize(BLUE));
+                        helper.setSlot(2, "&a黄队:" + TeamManager.getTeamSize(YELLOW));
+                        helper.setSlot(1, "&a绿队:" + TeamManager.getTeamSize(GREEN));
+                    }
+                }else cancel();
             }
-        }.runTaskTimer(MA.getInstance(),0,40);
+        }.runTaskTimer(MA.getInstance(),0,20);
     }
 
     public static void setprimaryitem(Player p){

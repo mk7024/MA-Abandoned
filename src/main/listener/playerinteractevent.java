@@ -27,6 +27,7 @@ public class playerinteractevent implements Listener {
             Player player = event.getPlayer();
             ItemStack block = player.getInventory().getItemInMainHand();
             if(GameManager.getState() == 0) {
+                event.setCancelled(true);
                 if (block.getType() == Material.WOOL) {
                         short dura = block.getDurability();
                         if (dura == 11) {
@@ -38,9 +39,7 @@ public class playerinteractevent implements Listener {
                         } else if (dura == 4) {
                             TeamManager.addToTeam(YELLOW, player);
                         }
-                    event.setCancelled(true);
                     }
-
             }
         }
 

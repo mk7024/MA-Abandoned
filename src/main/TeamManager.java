@@ -102,10 +102,10 @@ public class TeamManager {
         if(RED.size() > BLUE.size()){
             if(BLUE.size() > GREEN.size()){
                 if(GREEN.size() > YELLOW.size()){
-                    YELLOW.add(player.getName());
-                }else{ GREEN.add(player.getName());}
-            }else{  BLUE.add(player.getName());}
-        }else { RED.add(player.getName());}
+                    TeamManager.addToTeam(TeamType.YELLOW,player);
+                }else{ TeamManager.addToTeam(TeamType.GREEN,player);}
+            }else{  TeamManager.addToTeam(TeamType.BLUE,player);}
+        }else { TeamManager.addToTeam(TeamType.RED,player);}
     }
 
     public static String getTeam(Player player){
