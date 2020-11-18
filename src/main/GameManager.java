@@ -5,7 +5,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -54,6 +53,21 @@ public class GameManager {
             yellowteamhealth += health;
         }
     }
+    public static int getHealth(TeamType type){
+        if(type.toString().equalsIgnoreCase("GREEN")){
+            return greenteamhealth;
+        }
+        if(type.toString().equalsIgnoreCase("BLUE")){
+            return blueteamhealth;
+        }
+        if(type.toString().equalsIgnoreCase("RED")){
+            return redteamhealth;
+        }
+        if(type.toString().equalsIgnoreCase("YELLOW")){
+            return yellowteamhealth;
+        }
+        return 0;
+    }
 
     public static void sendTitleToAllPlayers(String s1,String s2,int i1,int i2,int i3){
         for(Player player : Bukkit.getServer().getOnlinePlayers()){
@@ -66,6 +80,7 @@ public class GameManager {
         for(Player player : Bukkit.getServer().getOnlinePlayers()){
             if(!TeamManager.isInTeam(player)){
                 TeamManager.startToBalanceTeamPlayer(player);
+                main.listener.playerrespawnevent.teleportToTeamLocation(player);
             }
         }
         countPhase1();

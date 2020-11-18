@@ -24,25 +24,34 @@ public class TeamManager {
         }
         if(type.equals(TeamType.BLUE)){
             BLUE.add(player.getName());
-            player.setDisplayName(ChatColor.BLUE + "[蓝队]" + ChatColor.RESET + player.getName());
-            player.setPlayerListName(ChatColor.BLUE + "[蓝队]" + ChatColor.RESET + player.getName());
         }else if(type.equals(TeamType.YELLOW)){
             YELLOW.add(player.getName());
-            player.setDisplayName(ChatColor.YELLOW + "[黄队]" + ChatColor.RESET + player.getName());
-            player.setPlayerListName(ChatColor.YELLOW + "[黄队]" + ChatColor.RESET + player.getName());
         }else if(type.equals(TeamType.RED)){
             RED.add(player.getName());
-            player.setDisplayName(ChatColor.RED + "[红队]" + ChatColor.RESET + player.getName());
-            player.setPlayerListName(ChatColor.RED + "[红队]" + ChatColor.RESET + player.getName());
         }else {
             GREEN.add(player.getName());
-            player.setDisplayName(ChatColor.GREEN + "[绿队]" + ChatColor.RESET + player.getName());
-            player.setPlayerListName(ChatColor.GREEN + "[绿队]" + ChatColor.RESET + player.getName());
         }
+        setTitleName(player);
         System.out.println(RED);
         System.out.println(YELLOW);
         System.out.println(GREEN);
         System.out.println(BLUE);
+    }
+
+    public static void setTitleName(Player player){
+        if(getTeam(player).contains("蓝")){
+            player.setDisplayName(ChatColor.BLUE + "[蓝队]" + ChatColor.RESET + player.getName());
+            player.setPlayerListName(ChatColor.BLUE + "[蓝队]" + ChatColor.RESET + player.getName());
+        }else if(getTeam(player).contains("黄")){
+            player.setDisplayName(ChatColor.YELLOW + "[黄队]" + ChatColor.RESET + player.getName());
+            player.setPlayerListName(ChatColor.YELLOW + "[黄队]" + ChatColor.RESET + player.getName());
+        }else if(getTeam(player).contains("红")){
+            player.setDisplayName(ChatColor.RED + "[红队]" + ChatColor.RESET + player.getName());
+            player.setPlayerListName(ChatColor.RED + "[红队]" + ChatColor.RESET + player.getName());
+        }else {
+            player.setDisplayName(ChatColor.GREEN + "[绿队]" + ChatColor.RESET + player.getName());
+            player.setPlayerListName(ChatColor.GREEN + "[绿队]" + ChatColor.RESET + player.getName());
+        }
     }
 
     public static int getTeamSize(TeamType type){
@@ -80,24 +89,6 @@ public class TeamManager {
         }else {return "RED";}
     }
 
-//    public static void setDisplayNameWhenStart() {
-//        for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-//            if (RED.contains(player.getName())) {
-//                player.setDisplayName(ChatColor.RED + "[红队]" + ChatColor.RESET + player.getName());
-//            } else {
-//                if (YELLOW.contains(player.getName())) {
-//                    player.setDisplayName(ChatColor.YELLOW + "[黄队]" + ChatColor.RESET + player.getName());
-//                } else {
-//                    if (BLUE.contains(player.getName())) {
-//                        player.setDisplayName(ChatColor.BLUE + "[蓝队]" + ChatColor.RESET + player.getName());
-//                    } else {
-//                        player.setDisplayName(ChatColor.GREEN + "[绿队]" + ChatColor.RESET + player.getName());
-//                    }
-//                }
-//            }
-//        }
-//    }
-
     public static void startToBalanceTeamPlayer(Player player){
         if(RED.size() > BLUE.size()){
             if(BLUE.size() > GREEN.size()){
@@ -122,6 +113,21 @@ public class TeamManager {
         }
             return "未加入队伍";
         }
+
+    public static int getTeamHealth(Player player){
+        if(isInTeam(player)){
+            if(YELLOW.contains(player.getName())){
+                return main.GameManager.getHealth(TeamType.YELLOW);
+            }else if(RED.contains(player.getName())){
+                return main.GameManager.getHealth(TeamType.RED);
+            }else if(GREEN.contains(player.getName())){
+                return main.GameManager.getHealth(TeamType.GREEN);
+            }else if(BLUE.contains(player.getName())){
+                return main.GameManager.getHealth(TeamType.BLUE);
+            }
+        }
+        return 0;
+    }
 
     public static boolean isInTeam(Player player){
         return YELLOW.contains(player.getName()) || RED.contains(player.getName()) || GREEN.contains(player.getName()) || BLUE.contains(player.getName());

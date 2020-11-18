@@ -13,6 +13,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
+import static main.TeamManager.setTitleName;
+
 public class playerjoinquit implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent p){
@@ -23,6 +25,9 @@ public class playerjoinquit implements Listener {
             p.setJoinMessage(MA.prefix + player.getName() + "加入了游戏!");
         }else {
             player.kickPlayer(ChatColor.RED + "现在已经是" + ChatColor.GREEN + String.valueOf(main.GameManager.getState()));
+        }
+        if(main.TeamManager.isInTeam(player)){
+            setTitleName(player);
         }
     }
     @EventHandler
