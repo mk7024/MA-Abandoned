@@ -14,7 +14,7 @@ public class GameManager {
     private static short state= 0;
     private static short maxplayersperteam = 8;
     private static short minplayersonline = 1;
-    private static short phase1time = 300;
+    private static short phase1time = 302;
     private static int redteamhealth,yellowteamhealth,greenteamhealth,blueteamhealth;
 
     public static void checkWhenToRun(){
@@ -80,12 +80,13 @@ public class GameManager {
         for(Player player : Bukkit.getServer().getOnlinePlayers()){
             if(!TeamManager.isInTeam(player)){
                 TeamManager.startToBalanceTeamPlayer(player);
-                main.listener.playerrespawnevent.teleportToTeamLocation(player);
             }
+            main.TeamManager.teleportToTeamLocation(player);
+            player.getInventory().clear();
         }
         countPhase1();
         setDefaultHealth();
-        setphase1board();
+        updatephase1board();
     }
 
     public static void startPhase2(){
@@ -142,26 +143,30 @@ public class GameManager {
         return state;
     }
 
-    public static void setphase1board(){
+    public static void updatephase1board(){
         new BukkitRunnable() {
             @Override
             public void run() {
                 if (getState() == 1) {
                     for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                        ScoreHelper helper = ScoreHelper.createScore(player);
-                        helper.setTitle("Mini Annihilation");
-                        int time = phase1time;
-                        int min = time/60;
-                        int sec = (time - time/60*60)%60;
-                        helper.setSlot(5, "&a阶段1时间:" + ChatColor.RESET + min + ":" + sec);
-                        helper.setSlot(4, "&a红队:" + ChatColor.RESET + redteamhealth);
-                        helper.setSlot(3, "&a蓝队:" + ChatColor.RESET+ blueteamhealth);
-                        helper.setSlot(2, "&a黄队:" + ChatColor.RESET+ yellowteamhealth);
-                        helper.setSlot(1, "&a绿队:"+ ChatColor.RESET + greenteamhealth);
+                        setphase1board(player);
                     }
                 }else cancel();
             }
         }.runTaskTimer(MA.getInstance(),0,20);
+    }
+
+    public static void setphase1board(Player player){
+        ScoreHelper helper = ScoreHelper.createScore(player);
+        helper.setTitle("Mini Annihilation");
+        int time = phase1time;
+        int min = time/60;
+        int sec = (time - time/60*60)%60;
+        helper.setSlot(5, "&a阶段1时间:" + ChatColor.RESET + min + ":" + sec);
+        helper.setSlot(4, "&a红队:" + ChatColor.RESET + redteamhealth);
+        helper.setSlot(3, "&a蓝队:" + ChatColor.RESET+ blueteamhealth);
+        helper.setSlot(2, "&a黄队:" + ChatColor.RESET+ yellowteamhealth);
+        helper.setSlot(1, "&a绿队:"+ ChatColor.RESET + greenteamhealth);
     }
 
     private static void countPhase1(){

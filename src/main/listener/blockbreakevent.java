@@ -16,37 +16,47 @@ import java.util.HashMap;
 public class blockbreakevent implements Listener {
 //    HashMap<Block, Location> restoreblock = new HashMap<>();
     @EventHandler
-    public void onBreak(BlockBreakEvent b){
+    public void onBreak(BlockBreakEvent b) {
         Block block = b.getBlock();
         Player player = b.getPlayer();
-        if(GameManager.getState() != 0){
-            if(block.getType() == Material.COAL_ORE){
-                restore(block,block.getType(),5);
-        }else {
-                if(block.getType() == Material.ENDER_STONE && GameManager.getState() >=1){
-                    double x = block.getLocation().getX();
-                    double y = block.getLocation().getY();
-                    double z = block.getLocation().getZ();
-                    if(x == MA.getInstance().getConfig().getDouble("Team.RED.end_stone.x") && y == MA.getInstance().getConfig().getDouble("Team.RED.end_stone.y") && z == MA.getInstance().getConfig().getDouble("Team.RED.end_stone.z")){
-                        main.GameManager.setHealth(-1, TeamType.RED);
-                        main.GameManager.sendTitleToAllPlayers(null,player.getName() + "正在破坏红队核心!",5,10,5);
-                    }
-                    if(x == MA.getInstance().getConfig().getDouble("Team.BLUE.end_stone.x") && y == MA.getInstance().getConfig().getDouble("Team.BLUE.end_stone.y") && z == MA.getInstance().getConfig().getDouble("Team.BLUE.end_stone.z")){
-                        main.GameManager.setHealth(-1, TeamType.BLUE);
-                        main.GameManager.sendTitleToAllPlayers(null,player.getName() + "正在破坏蓝队核心!",5,10,5);
-                    }
-                    if(x == MA.getInstance().getConfig().getDouble("Team.YELLOW.end_stone.x") && y == MA.getInstance().getConfig().getDouble("Team.YELLOW.end_stone.y") && z == MA.getInstance().getConfig().getDouble("Team.YELLOW.end_stone.z")){
-                        main.GameManager.setHealth(-1, TeamType.YELLOW);
-                        main.GameManager.sendTitleToAllPlayers(null,player.getName() + "正在破坏黄队核心!",5,10,5);
-                    }
-                    if(x == MA.getInstance().getConfig().getDouble("Team.GREEN.end_stone.x") && y == MA.getInstance().getConfig().getDouble("Team.GREEN.end_stone.y") && z == MA.getInstance().getConfig().getDouble("Team.GREEN.end_stone.z")){
-                        main.GameManager.setHealth(-1, TeamType.RED);
-                        main.GameManager.sendTitleToAllPlayers(null,player.getName() + "正在破坏绿队核心!",5,10,5);
-                    }
-                }
+        if (GameManager.getState() != 0 && block.getType() == Material.COAL_ORE) {
+            restore(block, block.getType(), 5);
+        } else { if (block.getType() == Material.ENDER_STONE) {
+            double x = block.getLocation().getX();
+            double y = block.getLocation().getY();
+            double z = block.getLocation().getZ();
+            main.GameManager.setphase1board(player);
+            if (x == MA.getInstance().getConfig().getDouble("Team.RED.end_stone.x") && y == MA.getInstance().getConfig().getDouble("Team.RED.end_stone.y") && z == MA.getInstance().getConfig().getDouble("Team.RED.end_stone.z")) {
+                main.GameManager.setHealth(-1, TeamType.RED);
+                main.GameManager.sendTitleToAllPlayers(null, player.getName() + "正在破坏红队核心!", 5, 10, 5);
+                setBlock(block,Material.BEDROCK);
+                restore(block, Material.ENDER_STONE, 5);
+                b.setDropItems(false);
             }
-        }else b.setCancelled(true);
+            if (x == MA.getInstance().getConfig().getDouble("Team.BLUE.end_stone.x") && y == MA.getInstance().getConfig().getDouble("Team.BLUE.end_stone.y") && z == MA.getInstance().getConfig().getDouble("Team.BLUE.end_stone.z")) {
+                main.GameManager.setHealth(-1, TeamType.BLUE);
+                main.GameManager.sendTitleToAllPlayers(null, player.getName() + "正在破坏蓝队核心!", 5, 10, 5);
+                setBlock(block,Material.BEDROCK);
+                restore(block, Material.ENDER_STONE, 5);
+                b.setDropItems(false);
+            }
+            if (x == MA.getInstance().getConfig().getDouble("Team.YELLOW.end_stone.x") && y == MA.getInstance().getConfig().getDouble("Team.YELLOW.end_stone.y") && z == MA.getInstance().getConfig().getDouble("Team.YELLOW.end_stone.z")) {
+                main.GameManager.setHealth(-1, TeamType.YELLOW);
+                main.GameManager.sendTitleToAllPlayers(null, player.getName() + "正在破坏黄队核心!", 5, 10, 5);
+                setBlock(block,Material.BEDROCK);
+                restore(block, Material.ENDER_STONE, 5);
+                b.setDropItems(false);
+            }
+            if (x == MA.getInstance().getConfig().getDouble("Team.GREEN.end_stone.x") && y == MA.getInstance().getConfig().getDouble("Team.GREEN.end_stone.y") && z == MA.getInstance().getConfig().getDouble("Team.GREEN.end_stone.z")) {
+                main.GameManager.setHealth(-1, TeamType.RED);
+                main.GameManager.sendTitleToAllPlayers(null, player.getName() + "正在破坏绿队核心!", 5, 10, 5);
+                setBlock(block,Material.BEDROCK);
+                restore(block, Material.ENDER_STONE, 5);
+                b.setDropItems(false);
+            }
+        }
     }
+        }
 
     public void restore(Block b,Material material, int time){
         Chunk chunk = b.getChunk();
@@ -61,5 +71,13 @@ public class blockbreakevent implements Listener {
                 System.out.println(material);
             }
         },(time * 20));
+    }
+    public void setBlock(Block block,Material material){
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                block.setType(material);
+            }
+        }.runTaskLater(MA.getInstance(),2);
     }
 }

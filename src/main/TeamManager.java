@@ -1,8 +1,8 @@
 package main;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Team;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ public class TeamManager {
     private static List<String> GREEN = new ArrayList<String>();
 
     public static void addToTeam(TeamType type, Player player){
-        if(!getTeam(player).contains("未")){
+        if(getTeamList(player) != null){
             removeFromTeam(player);
         }
         if(type.equals(TeamType.BLUE)){
@@ -39,13 +39,13 @@ public class TeamManager {
     }
 
     public static void setTitleName(Player player){
-        if(getTeam(player).contains("蓝")){
+        if(getTeamList(player) == BLUE){
             player.setDisplayName(ChatColor.BLUE + "[蓝队]" + ChatColor.RESET + player.getName());
             player.setPlayerListName(ChatColor.BLUE + "[蓝队]" + ChatColor.RESET + player.getName());
-        }else if(getTeam(player).contains("黄")){
+        }else if(getTeamList(player) == YELLOW){
             player.setDisplayName(ChatColor.YELLOW + "[黄队]" + ChatColor.RESET + player.getName());
             player.setPlayerListName(ChatColor.YELLOW + "[黄队]" + ChatColor.RESET + player.getName());
-        }else if(getTeam(player).contains("红")){
+        }else if(getTeamList(player) == RED){
             player.setDisplayName(ChatColor.RED + "[红队]" + ChatColor.RESET + player.getName());
             player.setPlayerListName(ChatColor.RED + "[红队]" + ChatColor.RESET + player.getName());
         }else {
@@ -79,15 +79,15 @@ public class TeamManager {
         }
     }
 
-    public static String beforeStartBalanceTeamPlayer(){
-        if(RED.size() > BLUE.size()){
-            if(BLUE.size() > GREEN.size()){
-                if(GREEN.size() > YELLOW.size()){
-                    return "YELLOW";
-                }else{ return "GREEN";}
-            }else{ return "BLUE";}
-        }else {return "RED";}
-    }
+//    public static String beforeStartBalanceTeamPlayer(){
+//        if(RED.size() > BLUE.size()){
+//            if(BLUE.size() > GREEN.size()){
+//                if(GREEN.size() > YELLOW.size()){
+//                    return "YELLOW";
+//                }else{ return "GREEN";}
+//            }else{ return "BLUE";}
+//        }else {return "RED";}
+//    }
 
     public static void startToBalanceTeamPlayer(Player player){
         if(RED.size() > BLUE.size()){
@@ -99,20 +99,20 @@ public class TeamManager {
         }else { TeamManager.addToTeam(TeamType.RED,player);}
     }
 
-    public static String getTeam(Player player){
+    public static List getTeamList(Player player){
         if(isInTeam(player)){
             if(YELLOW.contains(player.getName())){
-                return "黄队";
+                return YELLOW;
             }else if(RED.contains(player.getName())){
-                return "红队";
+                return RED;
             }else if(GREEN.contains(player.getName())){
-                return "绿队";
+                return GREEN;
             }else if(BLUE.contains(player.getName())){
-                return "蓝队";
+                return BLUE;
             }
         }
-            return "未加入队伍";
-        }
+        return null;
+    }
 
     public static int getTeamHealth(Player player){
         if(isInTeam(player)){
@@ -132,6 +132,43 @@ public class TeamManager {
     public static boolean isInTeam(Player player){
         return YELLOW.contains(player.getName()) || RED.contains(player.getName()) || GREEN.contains(player.getName()) || BLUE.contains(player.getName());
     }
+    public static void teleportToTeamLocation(Player player){
+        World w = MA.getInstance().getServer().getWorld(MA.getInstance().getConfig().getString("gameworldname"));
+        Location location = new Location(w,0,0,0);
+        Chunk chunk;
+        if(main.TeamManager.getTeamList(player) == BLUE){
+            location.setX(MA.getInstance().getConfig().getDouble("Team.BLUE.spawnpoint.x"));
+            location.setY(MA.getInstance().getConfig().getDouble("Team.BLUE.spawnpoint.y"));
+            location.setZ(MA.getInstance().getConfig().getDouble("Team.BLUE.spawnpoint.z"));
+            chunk = location.getChunk();
+            chunk.isLoaded();
+        }else if(main.TeamManager.getTeamList(player) == YELLOW){
+            location.setX(MA.getInstance().getConfig().getDouble("Team.YELLOW.spawnpoint.x"));
+            location.setY(MA.getInstance().getConfig().getDouble("Team.YELLOW.spawnpoint.y"));
+            location.setZ(MA.getInstance().getConfig().getDouble("Team.YELLOW.spawnpoint.z"));
+            chunk = location.getChunk();
+            chunk.isLoaded();
+        }else if(main.TeamManager.getTeamList(player) == RED){
+            location.setX(MA.getInstance().getConfig().getDouble("Team.RED.spawnpoint.x"));
+            location.setY(MA.getInstance().getConfig().getDouble("Team.RED.spawnpoint.y"));
+            location.setZ(MA.getInstance().getConfig().getDouble("Team.RED.spawnpoint.z"));
+            chunk = location.getChunk();
+            chunk.isLoaded();
+        }else {
+            location.setX(MA.getInstance().getConfig().getDouble("Team.GREEN.spawnpoint.x"));
+            location.setY(MA.getInstance().getConfig().getDouble("Team.GREEN.spawnpoint.y"));
+            location.setZ(MA.getInstance().getConfig().getDouble("Team.GREEN.spawnpoint.z"));
+            chunk = location.getChunk();
+            chunk.isLoaded();
+        }
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                player.teleport(location);
+                cancel();
+            }
+        }.runTaskLater(MA.getInstance(),10);
 
+    }
 
 }
