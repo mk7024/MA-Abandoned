@@ -19,12 +19,16 @@ public class playerjoinquit implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent p){
         Player player = p.getPlayer();
-        player.getInventory().clear();
-        GameManager.setprimaryitem(player);
-        if(main.GameManager.getState() <= 3){
+        if(main.GameManager.getState() == 0){
             p.setJoinMessage(MA.prefix + player.getName() + "加入了游戏!");
+            player.getInventory().clear();
+            GameManager.setprimaryitem(player);
         }else {
-            player.kickPlayer(ChatColor.RED + "现在已经是" + ChatColor.GREEN + String.valueOf(main.GameManager.getState()));
+            if(main.GameManager.getState() <= 3){
+                //TODO
+            }else {
+                player.kickPlayer(ChatColor.RED + "现在已经是" + ChatColor.GREEN + String.valueOf(main.GameManager.getState()));
+            }
         }
         if(main.TeamManager.isInTeam(player)){
             setTitleName(player);

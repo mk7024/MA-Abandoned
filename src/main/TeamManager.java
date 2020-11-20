@@ -114,6 +114,19 @@ public class TeamManager {
         return null;
     }
 
+    public static List returnGREEN(){
+        return GREEN;
+    }
+    public static List returnYELLOW(){
+        return YELLOW;
+    }
+    public static List returnBLUE(){
+        return BLUE;
+    }
+    public static List returnRED(){
+        return RED;
+    }
+
     public static int getTeamHealth(Player player){
         if(isInTeam(player)){
             if(YELLOW.contains(player.getName())){
@@ -132,42 +145,58 @@ public class TeamManager {
     public static boolean isInTeam(Player player){
         return YELLOW.contains(player.getName()) || RED.contains(player.getName()) || GREEN.contains(player.getName()) || BLUE.contains(player.getName());
     }
+
+    public static boolean isInSpecificTeam(Player player,List list){
+        return list.contains(player.getName());
+    }
+
     public static void teleportToTeamLocation(Player player){
         World w = MA.getInstance().getServer().getWorld(MA.getInstance().getConfig().getString("gameworldname"));
         Location location = new Location(w,0,0,0);
-        Chunk chunk;
         if(main.TeamManager.getTeamList(player) == BLUE){
             location.setX(MA.getInstance().getConfig().getDouble("Team.BLUE.spawnpoint.x"));
             location.setY(MA.getInstance().getConfig().getDouble("Team.BLUE.spawnpoint.y"));
             location.setZ(MA.getInstance().getConfig().getDouble("Team.BLUE.spawnpoint.z"));
-            chunk = location.getChunk();
-            chunk.isLoaded();
+            Chunk chunk = location.getChunk();
+            if(!chunk.isLoaded()){
+                chunk.load(true);
+            }
         }else if(main.TeamManager.getTeamList(player) == YELLOW){
             location.setX(MA.getInstance().getConfig().getDouble("Team.YELLOW.spawnpoint.x"));
             location.setY(MA.getInstance().getConfig().getDouble("Team.YELLOW.spawnpoint.y"));
             location.setZ(MA.getInstance().getConfig().getDouble("Team.YELLOW.spawnpoint.z"));
-            chunk = location.getChunk();
+            Chunk chunk = location.getChunk();
             chunk.isLoaded();
+            if(!chunk.isLoaded()){
+                chunk.load(true);
+            }
         }else if(main.TeamManager.getTeamList(player) == RED){
             location.setX(MA.getInstance().getConfig().getDouble("Team.RED.spawnpoint.x"));
             location.setY(MA.getInstance().getConfig().getDouble("Team.RED.spawnpoint.y"));
             location.setZ(MA.getInstance().getConfig().getDouble("Team.RED.spawnpoint.z"));
-            chunk = location.getChunk();
+            Chunk chunk = location.getChunk();
             chunk.isLoaded();
+            if(!chunk.isLoaded()){
+                chunk.load(true);
+            }
         }else {
             location.setX(MA.getInstance().getConfig().getDouble("Team.GREEN.spawnpoint.x"));
             location.setY(MA.getInstance().getConfig().getDouble("Team.GREEN.spawnpoint.y"));
             location.setZ(MA.getInstance().getConfig().getDouble("Team.GREEN.spawnpoint.z"));
-            chunk = location.getChunk();
+            Chunk chunk = location.getChunk();
             chunk.isLoaded();
+            if(!chunk.isLoaded()){
+                chunk.load(true);
+            }
         }
+
         new BukkitRunnable(){
             @Override
             public void run(){
                 player.teleport(location);
                 cancel();
             }
-        }.runTaskLater(MA.getInstance(),10);
+        }.runTaskLater(MA.getInstance(),6);
 
     }
 

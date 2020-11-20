@@ -6,6 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class MA extends JavaPlugin {
@@ -32,6 +33,11 @@ public class MA extends JavaPlugin {
         sender.sendMessage("MiniAnnihilation插件已关闭");
     }
 
+    public static void sendTitleToAllPlayers(String s1,String s2,int i1,int i2,int i3){
+        for(Player player : Bukkit.getOnlinePlayers()){
+            player.sendTitle(s1,s2,i1,i2,i3);
+        }
+    }
 
     public static MA getInstance(){
         return instance;

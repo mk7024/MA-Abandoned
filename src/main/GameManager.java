@@ -8,6 +8,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import static main.MA.sendTitleToAllPlayers;
 import static main.TeamType.*;
 
 public class GameManager {
@@ -69,12 +71,6 @@ public class GameManager {
         return 0;
     }
 
-    public static void sendTitleToAllPlayers(String s1,String s2,int i1,int i2,int i3){
-        for(Player player : Bukkit.getServer().getOnlinePlayers()){
-            player.sendTitle(s1,s2,i1,i2,i3);
-        }
-    }
-
     public static void startPhase1(){
         state = 1;
         for(Player player : Bukkit.getServer().getOnlinePlayers()){
@@ -95,39 +91,39 @@ public class GameManager {
 
     private static void countToStart(){
         new BukkitRunnable(){
-            int timetocount = 15;
+            int timetocount = 7;
             @Override
             public void run(){
                 timetocount -= 1;
                 if(Bukkit.getServer().getOnlinePlayers().size() < minplayersonline){
                     checkWhenToRun();
                     System.out.println("启动cancel");
-                    sendTitleToAllPlayers(ChatColor.RED + "人数不足,停止计时!","",10,20,10);
+                    sendTitleToAllPlayers(ChatColor.RED + "人数不足,停止计时!",null,10,20,10);
                     cancel();
                 }
 //                if(timetocount == 60){
 //                    sendTitleToAllPlayers(ChatColor.GREEN + "游戏还有60秒开始","",10,20,10);
 //                }
                 if(timetocount == 30){
-                    sendTitleToAllPlayers(ChatColor.GREEN + "游戏还有30秒开始","",10,20,10);
+                    sendTitleToAllPlayers(ChatColor.GREEN + "游戏还有30秒开始",null,10,20,10);
                 }
                 if(timetocount == 10){
-                    sendTitleToAllPlayers(ChatColor.GREEN + "游戏还有10秒开始","",10,20,10);
+                    sendTitleToAllPlayers(ChatColor.GREEN + "游戏还有10秒开始",null,10,20,10);
                 }
                 if(timetocount == 5){
-                    sendTitleToAllPlayers(ChatColor.GREEN + "5","",5,10,5);
+                    sendTitleToAllPlayers(ChatColor.GREEN + "5",null,5,10,5);
                 }
                 if(timetocount == 4){
-                    sendTitleToAllPlayers(ChatColor.GREEN + "4","",5,10,5);
+                    sendTitleToAllPlayers(ChatColor.GREEN + "4",null,5,10,5);
                 }
                 if(timetocount == 3){
-                    sendTitleToAllPlayers(ChatColor.GREEN + "3","",5,10,5);
+                    sendTitleToAllPlayers(ChatColor.GREEN + "3",null,5,10,5);
                 }
                 if(timetocount == 2){
-                    sendTitleToAllPlayers(ChatColor.GREEN + "2","",5,10,5);
+                    sendTitleToAllPlayers(ChatColor.GREEN + "2",null,5,10,5);
                 }
                 if(timetocount == 1){
-                    sendTitleToAllPlayers(ChatColor.GREEN + "1","",5,10,5);
+                    sendTitleToAllPlayers(ChatColor.GREEN + "1",null,5,10,5);
                 }
                 if(timetocount == 0){
                     startPhase1();
