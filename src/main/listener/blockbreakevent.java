@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
@@ -25,20 +26,29 @@ public class blockbreakevent implements Listener {
     public void onBreak(BlockBreakEvent b) {
         Block block = b.getBlock();
         Player player = b.getPlayer();
-
+        Material type = block.getType();
         if (GameManager.getState() != 0) {
-            if (block.getType() == Material.COAL_ORE || block.getType() == Material.IRON_ORE || block.getType() == Material.STONE || block.getType() == Material.GOLD_ORE || block.getType() == Material.DIAMOND_ORE) {
+            if (type == Material.COAL_ORE || type == Material.IRON_ORE || type == Material.STONE || type == Material.GOLD_ORE || type == Material.MELON_BLOCK) {
                 restore(block, block.getType(), 5);
+            }
+            if(type == Material.DIAMOND_ORE && GameManager.getState() >=3){
+                restore(block, block.getType(), 30);
             }
             if (block.getType() == Material.ENDER_STONE) {
                 Location location = block.getLocation();
                 main.GameManager.setphase1board(player);
                 if (location.equals(redteamendstone)) {
-                    if (!main.TeamManager.isInSpecificTeam(player, main.TeamManager.returnRED())) {
-                        main.GameManager.setHealth(-1, TeamType.RED);
-                        main.MA.sendTitleToAllPlayers("", ChatColor.RED + player.getName() + "正在破坏红队核心!", 5, 10, 5);
-                        setBlock(block, Material.BEDROCK);
-                        restore(block, Material.ENDER_STONE, 1);
+                    if (!TeamManager.RED.contains(player)) {
+                        if(GameManager.redteamhealth!=0){
+                            main.GameManager.setHealth(-1, TeamType.RED);
+                            main.MA.sendTitleToAllPlayers("", ChatColor.RED + player.getName() + "正在破坏红队核心!", 5, 10, 5);
+                            setBlock(block, Material.BEDROCK);
+                            restore(block, Material.ENDER_STONE, 1);
+
+                        }else{
+                            GameManager.teamremain.remove("RED");
+                            setBlock(block, Material.BEDROCK);
+                        }
                         b.setDropItems(false);
                     } else {
                         player.sendTitle("你不能破坏自己的核心!", "", 5, 15, 5);
@@ -46,11 +56,16 @@ public class blockbreakevent implements Listener {
                     }
                 }
                 if (location.equals(blueteamendstone)) {
-                    if (!main.TeamManager.isInSpecificTeam(player, main.TeamManager.returnBLUE())) {
-                        main.GameManager.setHealth(-1, TeamType.BLUE);
-                        main.MA.sendTitleToAllPlayers(null, player.getName() + "正在破坏蓝队核心!", 5, 10, 5);
-                        setBlock(block, Material.BEDROCK);
-                        restore(block, Material.ENDER_STONE, 1);
+                    if (!TeamManager.BLUE.contains(player)) {
+                        if(GameManager.blueteamhealth!=0){
+                            main.GameManager.setHealth(-1, TeamType.BLUE);
+                            main.MA.sendTitleToAllPlayers("", ChatColor.RED + player.getName() + "正在破坏蓝队核心!", 5, 10, 5);
+                            setBlock(block, Material.BEDROCK);
+                            restore(block, Material.ENDER_STONE, 1);
+                        }else{
+                            GameManager.teamremain.remove("BLUE");
+                            setBlock(block, Material.BEDROCK);
+                        }
                         b.setDropItems(false);
                     } else {
                         player.sendTitle("你不能破坏自己的核心!", "", 5, 15, 5);
@@ -58,11 +73,17 @@ public class blockbreakevent implements Listener {
                     }
                 }
                 if (location.equals(yellowteamendstone)) {
-                    if (!main.TeamManager.isInSpecificTeam(player, main.TeamManager.returnYELLOW())) {
-                        main.GameManager.setHealth(-1, TeamType.YELLOW);
-                        main.MA.sendTitleToAllPlayers(null, player.getName() + "正在破坏黄队核心!", 5, 10, 5);
-                        setBlock(block, Material.BEDROCK);
-                        restore(block, Material.ENDER_STONE, 1);
+                    if (!TeamManager.YELLOW.contains(player)) {
+                        if(GameManager.yellowteamhealth!=0){
+                            main.GameManager.setHealth(-1, TeamType.YELLOW);
+                            main.MA.sendTitleToAllPlayers("", ChatColor.RED + player.getName() + "正在破坏黄队核心!", 5, 10, 5);
+                            setBlock(block, Material.BEDROCK);
+                            restore(block, Material.ENDER_STONE, 1);
+
+                        }else{
+                            GameManager.teamremain.remove("YELLOW");
+                            setBlock(block, Material.BEDROCK);
+                        }
                         b.setDropItems(false);
                     } else {
                         player.sendTitle("你不能破坏自己的核心!", "", 5, 15, 5);
@@ -70,11 +91,17 @@ public class blockbreakevent implements Listener {
                     }
                 }
                 if (location.equals(greenteamendstone)) {
-                    if (!main.TeamManager.isInSpecificTeam(player, main.TeamManager.returnGREEN())) {
-                        main.GameManager.setHealth(-1, TeamType.RED);
-                        main.MA.sendTitleToAllPlayers(null, player.getName() + "正在破坏绿队核心!", 5, 10, 5);
-                        setBlock(block, Material.BEDROCK);
-                        restore(block, Material.ENDER_STONE, 1);
+                    if (!TeamManager.GREEN.contains(player)) {
+                        if(GameManager.greenteamhealth!=0){
+                            main.GameManager.setHealth(-1, TeamType.GREEN);
+                            main.MA.sendTitleToAllPlayers("", ChatColor.RED + player.getName() + "正在破坏绿队核心!", 5, 10, 5);
+                            setBlock(block, Material.BEDROCK);
+                            restore(block, Material.ENDER_STONE, 1);
+
+                        }else{
+                            GameManager.teamremain.remove("GREEN");
+                            setBlock(block, Material.BEDROCK);
+                        }
                         b.setDropItems(false);
                     } else {
                         player.sendTitle("你不能破坏自己的核心!", "", 5, 15, 5);
@@ -84,7 +111,6 @@ public class blockbreakevent implements Listener {
             }
         }else b.setCancelled(true);
     }
-
     public void restore(Block b,Material material, int time){
         Chunk chunk = b.getChunk();
         if(!chunk.isLoaded()){

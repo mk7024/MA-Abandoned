@@ -17,20 +17,16 @@ import static main.TeamManager.setTitleName;
 
 public class playerjoinquit implements Listener {
     @EventHandler
-    public void onJoin(PlayerJoinEvent p){
+    public void onJoin(PlayerJoinEvent p) {
         Player player = p.getPlayer();
-        if(main.GameManager.getState() == 0){
+        if (main.GameManager.getState() <= 3 && !main.TeamManager.isInTeam(player)) {
             p.setJoinMessage(MA.prefix + player.getName() + "加入了游戏!");
             player.getInventory().clear();
             GameManager.setprimaryitem(player);
-        }else {
-            if(main.GameManager.getState() <= 3){
-                //TODO
-            }else {
-                player.kickPlayer(ChatColor.RED + "现在已经是" + ChatColor.GREEN + String.valueOf(main.GameManager.getState()));
-            }
+        } else {
+            player.kickPlayer(ChatColor.RED + "现在已经是" + ChatColor.GREEN + String.valueOf(main.GameManager.getState()));
         }
-        if(main.TeamManager.isInTeam(player)){
+        if (main.TeamManager.isInTeam(player)) {
             setTitleName(player);
         }
     }

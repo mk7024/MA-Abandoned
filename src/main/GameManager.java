@@ -9,6 +9,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static main.MA.sendTitleToAllPlayers;
 import static main.TeamType.*;
 
@@ -16,8 +19,10 @@ public class GameManager {
     private static short state= 0;
     private static short maxplayersperteam = 8;
     private static short minplayersonline = 1;
-    private static short phase1time = 302;
-    private static int redteamhealth,yellowteamhealth,greenteamhealth,blueteamhealth;
+    private static short phase1time = 20;
+    private static short phase2time = 20;
+    public static int redteamhealth,yellowteamhealth,greenteamhealth,blueteamhealth;
+    public static List<String> teamremain = new ArrayList<String>();
 
     public static void checkWhenToRun(){
         new BukkitRunnable(){
@@ -73,6 +78,10 @@ public class GameManager {
 
     public static void startPhase1(){
         state = 1;
+        teamremain.add("BLUE");
+        teamremain.add("YELLOW");
+        teamremain.add("GREEN");
+        teamremain.add("RED");
         for(Player player : Bukkit.getServer().getOnlinePlayers()){
             if(!TeamManager.isInTeam(player)){
                 TeamManager.startToBalanceTeamPlayer(player);
@@ -86,7 +95,12 @@ public class GameManager {
     }
 
     public static void startPhase2(){
+        countPhase2();
         state = 2;
+    }
+
+    public static void startPhase3(){
+        state = 3;
     }
 
     private static void countToStart(){
@@ -143,7 +157,7 @@ public class GameManager {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (getState() == 1) {
+                if (getState() >=1 && getState() <=4) {
                     for (Player player : Bukkit.getServer().getOnlinePlayers()) {
                         setphase1board(player);
                     }
@@ -155,10 +169,18 @@ public class GameManager {
     public static void setphase1board(Player player){
         ScoreHelper helper = ScoreHelper.createScore(player);
         helper.setTitle("Mini Annihilation");
-        int time = phase1time;
-        int min = time/60;
-        int sec = (time - time/60*60)%60;
-        helper.setSlot(5, "&a阶段1时间:" + ChatColor.RESET + min + ":" + sec);
+        int min = 0;
+        int sec = 0;
+        if(state == 1) {
+            int time = phase1time;
+            min = time / 60;
+            sec = (time - time / 60 * 60) % 60;
+        }else if(state == 2){
+            int time = phase2time;
+            min = time / 60;
+            sec = (time - time / 60 * 60) % 60;
+        }
+        helper.setSlot(5, "&a阶段" + getState() + "时间:" + ChatColor.RESET + min + ":" + sec);
         helper.setSlot(4, "&a红队:" + ChatColor.RESET + redteamhealth);
         helper.setSlot(3, "&a蓝队:" + ChatColor.RESET+ blueteamhealth);
         helper.setSlot(2, "&a黄队:" + ChatColor.RESET+ yellowteamhealth);
@@ -172,6 +194,20 @@ public class GameManager {
                 phase1time -= 1;
                 if(phase1time == 0){
                     startPhase2();
+                    cancel();
+                }
+            }
+        }.runTaskTimer(MA.getInstance(),0,20);
+    }
+
+    private static void countPhase2(){
+        checkWhoToWin();
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                phase2time -= 1;
+                if(phase2time == 0){
+                    startPhase3();
                     cancel();
                 }
             }
@@ -193,6 +229,18 @@ public class GameManager {
                         helper.setSlot(1, "&a绿队:" + TeamManager.getTeamSize(GREEN));
                     }
                 }else cancel();
+            }
+        }.runTaskTimer(MA.getInstance(),0,20);
+    }
+
+    public static void checkWhoToWin(){
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                if(teamremain.size() == 1){
+                    System.out.println("最终获胜的是" + teamremain.toString());
+                    cancel();
+                }
             }
         }.runTaskTimer(MA.getInstance(),0,20);
     }

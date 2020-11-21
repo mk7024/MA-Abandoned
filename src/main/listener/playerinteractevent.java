@@ -23,13 +23,12 @@ import static main.TeamType.*;
 public class playerinteractevent implements Listener {
     @EventHandler
     public void onInteract(PlayerInteractEvent event){
-        if(GameManager.getState() == 0){
-            Player player = event.getPlayer();
+        Player player = event.getPlayer();
+        if(GameManager.getState() <=3 && !main.TeamManager.isInTeam(player)){
             ItemStack block = player.getInventory().getItemInMainHand();
-            if(GameManager.getState() == 0) {
-                event.setCancelled(true);
                 if (block.getType() == Material.WOOL) {
                         short dura = block.getDurability();
+                        player.getInventory().clear();
                         if (dura == 11) {
                             TeamManager.addToTeam(BLUE, player);
                         } else if (dura == 5) {
@@ -40,7 +39,10 @@ public class playerinteractevent implements Listener {
                             TeamManager.addToTeam(YELLOW, player);
                         }
                     }
-            }
+                if(GameManager.getState() >=1 && GameManager.getState() <=3){
+                    main.TeamManager.teleportToTeamLocation(player);
+                }
+            event.setCancelled(true);
         }
 
     }

@@ -7,3 +7,6 @@ commands:
   MA:
     usage: /<command>
     permission: MA.admin
+  all:
+      usage: /<command>
+      permission: MA.player

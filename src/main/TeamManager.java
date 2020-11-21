@@ -13,23 +13,23 @@ import static main.TeamType.*;
 import static main.TeamType.YELLOW;
 
 public class TeamManager {
-    private static List<String> YELLOW = new ArrayList<String>();
-    private static List<String> RED = new ArrayList<String>();
-    private static List<String> BLUE = new ArrayList<String>();
-    private static List<String> GREEN = new ArrayList<String>();
+    public static List<Player> YELLOW = new ArrayList<>();
+    public static List<Player> RED = new ArrayList<>();
+    public static List<Player> BLUE = new ArrayList<>();
+    public static List<Player> GREEN = new ArrayList<>();
 
     public static void addToTeam(TeamType type, Player player){
         if(getTeamList(player) != null){
             removeFromTeam(player);
         }
         if(type.equals(TeamType.BLUE)){
-            BLUE.add(player.getName());
+            BLUE.add(player);
         }else if(type.equals(TeamType.YELLOW)){
-            YELLOW.add(player.getName());
+            YELLOW.add(player);
         }else if(type.equals(TeamType.RED)){
-            RED.add(player.getName());
+            RED.add(player);
         }else {
-            GREEN.add(player.getName());
+            GREEN.add(player);
         }
         setTitleName(player);
         System.out.println(RED);
@@ -68,26 +68,17 @@ public class TeamManager {
     }
 
     public static void removeFromTeam(Player player){
-        if(YELLOW.contains(player.getName())){
-            YELLOW.remove(player.getName());
-        }else if(RED.contains(player.getName())){
-            RED.remove(player.getName());
-        }else if(GREEN.contains(player.getName())){
-            GREEN.remove(player.getName());
-        }else if(BLUE.contains(player.getName())){
-            BLUE.remove(player.getName());
+        if(YELLOW.contains(player)){
+            YELLOW.remove(player);
+        }else if(RED.contains(player)){
+            RED.remove(player);
+        }else if(GREEN.contains(player)){
+            GREEN.remove(player);
+        }else if(BLUE.contains(player)){
+            BLUE.remove(player);
         }
     }
 
-//    public static String beforeStartBalanceTeamPlayer(){
-//        if(RED.size() > BLUE.size()){
-//            if(BLUE.size() > GREEN.size()){
-//                if(GREEN.size() > YELLOW.size()){
-//                    return "YELLOW";
-//                }else{ return "GREEN";}
-//            }else{ return "BLUE";}
-//        }else {return "RED";}
-//    }
 
     public static void startToBalanceTeamPlayer(Player player){
         if(RED.size() > BLUE.size()){
@@ -101,41 +92,29 @@ public class TeamManager {
 
     public static List getTeamList(Player player){
         if(isInTeam(player)){
-            if(YELLOW.contains(player.getName())){
+            if(YELLOW.contains(player)){
                 return YELLOW;
-            }else if(RED.contains(player.getName())){
+            }else if(RED.contains(player)){
                 return RED;
-            }else if(GREEN.contains(player.getName())){
+            }else if(GREEN.contains(player)){
                 return GREEN;
-            }else if(BLUE.contains(player.getName())){
+            }else if(BLUE.contains(player)){
                 return BLUE;
             }
         }
         return null;
     }
 
-    public static List returnGREEN(){
-        return GREEN;
-    }
-    public static List returnYELLOW(){
-        return YELLOW;
-    }
-    public static List returnBLUE(){
-        return BLUE;
-    }
-    public static List returnRED(){
-        return RED;
-    }
 
     public static int getTeamHealth(Player player){
         if(isInTeam(player)){
-            if(YELLOW.contains(player.getName())){
+            if(YELLOW.contains(player)){
                 return main.GameManager.getHealth(TeamType.YELLOW);
-            }else if(RED.contains(player.getName())){
+            }else if(RED.contains(player)){
                 return main.GameManager.getHealth(TeamType.RED);
-            }else if(GREEN.contains(player.getName())){
+            }else if(GREEN.contains(player)){
                 return main.GameManager.getHealth(TeamType.GREEN);
-            }else if(BLUE.contains(player.getName())){
+            }else if(BLUE.contains(player)){
                 return main.GameManager.getHealth(TeamType.BLUE);
             }
         }
@@ -143,11 +122,7 @@ public class TeamManager {
     }
 
     public static boolean isInTeam(Player player){
-        return YELLOW.contains(player.getName()) || RED.contains(player.getName()) || GREEN.contains(player.getName()) || BLUE.contains(player.getName());
-    }
-
-    public static boolean isInSpecificTeam(Player player,List list){
-        return list.contains(player.getName());
+        return YELLOW.contains(player) || RED.contains(player) || GREEN.contains(player) || BLUE.contains(player);
     }
 
     public static void teleportToTeamLocation(Player player){

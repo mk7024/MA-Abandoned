@@ -15,6 +15,7 @@ public class playerrespawnevent {
             player.setGameMode(GameMode.SPECTATOR);
         }
         TeamManager.teleportToTeamLocation(player);
+        player.sendTitle(null,"你的队伍核心已无血量,不可复活!",10,40,10);
     }
 
 }
