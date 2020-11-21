@@ -30,16 +30,32 @@ public class playerinteractevent implements Listener {
                         short dura = block.getDurability();
                         player.getInventory().clear();
                         if (dura == 11) {
-                            TeamManager.addToTeam(BLUE, player);
+                            if(GameManager.getHealth(BLUE) != 0){
+                                TeamManager.addToTeam(BLUE, player);
+                            }else {
+                                player.sendMessage("蓝队已经死亡,无法加入!");
+                            }
                         } else if (dura == 5) {
-                            TeamManager.addToTeam(GREEN, player);
+                            if(GameManager.getHealth(GREEN) != 0){
+                                TeamManager.addToTeam(GREEN, player);
+                            }else {
+                                player.sendMessage("绿队已经死亡,无法加入!");
+                            }
                         } else if (dura == 14) {
-                            TeamManager.addToTeam(RED, player);
+                            if(GameManager.getHealth(RED) != 0){
+                                TeamManager.addToTeam(RED, player);
+                            }else {
+                                player.sendMessage("红队已经死亡,无法加入!");
+                            }
                         } else if (dura == 4) {
-                            TeamManager.addToTeam(YELLOW, player);
+                            if(GameManager.getHealth(YELLOW) != 0){
+                                TeamManager.addToTeam(YELLOW, player);
+                            }else {
+                                player.sendMessage("黄队已经死亡,无法加入!");
+                            }
                         }
                     }
-                if(GameManager.getState() >=1 && GameManager.getState() <=3){
+                if(GameManager.getState() >=1 && GameManager.getState() <=3 && main.TeamManager.isInTeam(player)){
                     main.TeamManager.teleportToTeamLocation(player);
                 }
             event.setCancelled(true);

@@ -20,6 +20,7 @@ public class MA extends JavaPlugin {
         GameManager.setandupdateprimaryboard();
         getCommand("MA").setExecutor(new main.command.gameSet());
         getCommand("all").setExecutor(new main.command.globalChat());
+        GameManager.setDefaultHealth();
         getServer().getPluginManager().registerEvents(new playerjoinquit(),this);
         getServer().getPluginManager().registerEvents(new blockbreakevent(),this);
         getServer().getPluginManager().registerEvents(new playerinteractevent(),this);

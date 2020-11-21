@@ -42,7 +42,7 @@ public class GameManager {
         }.runTaskTimer(MA.getInstance(),0,20);
     }
 
-    private static void setDefaultHealth(){
+    public static void setDefaultHealth(){
         redteamhealth = blueteamhealth = yellowteamhealth = greenteamhealth = MA.getInstance().getConfig().getInt("defaulthealth");
     }
 
@@ -90,7 +90,6 @@ public class GameManager {
             player.getInventory().clear();
         }
         countPhase1();
-        setDefaultHealth();
         updatephase1board();
     }
 
