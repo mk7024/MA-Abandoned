@@ -11,13 +11,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class MA extends JavaPlugin {
     private static MA instance;
-    public static String prefix = ChatColor.GREEN + "[MA]" + ChatColor.RESET;
+    public static String prefix = ChatColor.RED + "" + ChatColor.BOLD +  "核心荣耀 >>" + ChatColor.RESET;
     @Override
     public void onEnable(){
         instance = this;
         saveDefaultConfig();
         GameManager.checkWhenToRun();
-        GameManager.setandupdateprimaryboard();
         getCommand("MA").setExecutor(new main.command.gameSet());
         getCommand("all").setExecutor(new main.command.globalChat());
         GameManager.setDefaultHealth();

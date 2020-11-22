@@ -68,6 +68,8 @@ public class TeamManager {
     }
 
     public static void removeFromTeam(Player player){
+        player.setDisplayName("");
+        player.setPlayerListName("");
         if(YELLOW.contains(player)){
             YELLOW.remove(player);
         }else if(RED.contains(player)){

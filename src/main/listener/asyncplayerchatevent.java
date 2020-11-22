@@ -1,6 +1,7 @@
 package main.listener;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,21 +14,21 @@ public class asyncplayerchatevent implements Listener {
         if(main.TeamManager.isInTeam(player)){
             for(Player playerteam : Bukkit.getOnlinePlayers()){
                 if(main.TeamManager.getTeamList(player) == main.TeamManager.RED){
-                    playerteam.sendMessage("[红队]" + event.getMessage());
+                    playerteam.sendMessage(ChatColor.GRAY + "["+ ChatColor.RED + "TEAM" + ChatColor.GRAY + "]" + ChatColor.RESET + player.getName() + ":  " + event.getMessage());
                 }
                 if(main.TeamManager.getTeamList(playerteam) == main.TeamManager.BLUE){
-                    playerteam.sendMessage("[蓝队]" + event.getMessage());
+                    playerteam.sendMessage(ChatColor.GRAY + "["+ ChatColor.BLUE + "TEAM" + ChatColor.GRAY + "]" + ChatColor.RESET + player.getName() + ":  " + event.getMessage());
                 }
                 if(main.TeamManager.getTeamList(playerteam) == main.TeamManager.GREEN){
-                    playerteam.sendMessage("[绿队]" + event.getMessage());
+                    playerteam.sendMessage(ChatColor.GRAY + "["+ ChatColor.GREEN + "TEAM" + ChatColor.GRAY + "]" + ChatColor.RESET + player.getName() + ":  " + event.getMessage());
                 }
                 if(main.TeamManager.getTeamList(playerteam) == main.TeamManager.YELLOW){
-                    playerteam.sendMessage("[黄队]" + event.getMessage());
+                    playerteam.sendMessage(ChatColor.GRAY + "["+ ChatColor.YELLOW + "TEAM" + ChatColor.GRAY + "]" + ChatColor.RESET + player.getName() + ":  " + event.getMessage());
                 }
             }
         }else{
             for(Player playerall : Bukkit.getOnlinePlayers()){
-                playerall.sendMessage("lobby" + event.getMessage());
+                playerall.sendMessage(ChatColor.GRAY + "["+ ChatColor.AQUA + "ALL" + ChatColor.GRAY + "]" + "  [" + ChatColor.DARK_PURPLE + "LOBBY" + ChatColor.GRAY + "]  " + ChatColor.RESET + player.getName() + ":  " + event.getMessage());
             }
         }
         event.setCancelled(true);

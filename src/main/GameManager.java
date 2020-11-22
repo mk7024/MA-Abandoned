@@ -21,10 +21,13 @@ public class GameManager {
     private static short minplayersonline = 1;
     private static short phase1time = 20;
     private static short phase2time = 20;
+    private static short phase3time = 20;
+    private static short phase4time = 20;
     public static int redteamhealth,yellowteamhealth,greenteamhealth,blueteamhealth;
     public static List<String> teamremain = new ArrayList<String>();
 
     public static void checkWhenToRun(){
+        setandupdateprimaryboard();
         new BukkitRunnable(){
             @Override
             public void run(){
@@ -76,7 +79,7 @@ public class GameManager {
         return 0;
     }
 
-    public static void startPhase1(){
+    private static void startPhase1(){
         state = 1;
         teamremain.add("BLUE");
         teamremain.add("YELLOW");
@@ -93,13 +96,19 @@ public class GameManager {
         updatephase1board();
     }
 
-    public static void startPhase2(){
+    private static void startPhase2(){
         countPhase2();
         state = 2;
     }
 
-    public static void startPhase3(){
+    private static void startPhase3(){
+        countPhase3();
         state = 3;
+    }
+
+    private static void startPhase4(){
+        countPhase4();
+        state = 4;
     }
 
     private static void countToStart(){
@@ -213,7 +222,32 @@ public class GameManager {
         }.runTaskTimer(MA.getInstance(),0,20);
     }
 
-    public static void setandupdateprimaryboard() {
+    private static void countPhase3(){
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                phase3time -= 1;
+                if(phase3time == 0){
+                    startPhase4();
+                    cancel();
+                }
+            }
+        }.runTaskTimer(MA.getInstance(),0,20);
+    }
+
+    private static void countPhase4(){
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                phase4time -= 1;
+                if(phase4time == 0){
+                    cancel();
+                }
+            }
+        }.runTaskTimer(MA.getInstance(),0,20);
+    }
+
+    private static void setandupdateprimaryboard() {
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -232,7 +266,7 @@ public class GameManager {
         }.runTaskTimer(MA.getInstance(),0,20);
     }
 
-    public static void checkWhoToWin(){
+    private static void checkWhoToWin(){
         new BukkitRunnable(){
             @Override
             public void run(){
