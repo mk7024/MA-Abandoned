@@ -21,18 +21,19 @@ public class MA extends JavaPlugin {
         getCommand("all").setExecutor(new main.command.globalChat());
         GameManager.setDefaultHealth();
         getServer().getPluginManager().registerEvents(new playerjoinquit(),this);
+        getServer().getPluginManager().registerEvents(new SoulBoundItem(),this);
         getServer().getPluginManager().registerEvents(new blockbreakevent(),this);
         getServer().getPluginManager().registerEvents(new playerinteractevent(),this);
         getServer().getPluginManager().registerEvents(new entitydamageevent(),this);
         getServer().getPluginManager().registerEvents(new asyncplayerchatevent(),this);
         getServer().getPluginManager().registerEvents(new inventoryclickevent(),this);
-        System.out.println("MiniAnnihilation插件已启动");
+        System.out.println(prefix + "  MiniAnnihilation插件已启动");
     }
 
     @Override
     public void onDisable(){
         ConsoleCommandSender sender = Bukkit.getConsoleSender();
-        sender.sendMessage("MiniAnnihilation插件已关闭");
+        sender.sendMessage(prefix + "  MiniAnnihilation插件已关闭");
     }
 
     public static void sendTitleToAllPlayers(String s1,String s2,int i1,int i2,int i3){

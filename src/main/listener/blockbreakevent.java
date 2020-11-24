@@ -31,8 +31,12 @@ public class blockbreakevent implements Listener {
             if (type == Material.COAL_ORE || type == Material.IRON_ORE || type == Material.STONE || type == Material.GOLD_ORE || type == Material.MELON_BLOCK) {
                 restore(block, block.getType(), 5);
             }
-            if(type == Material.DIAMOND_ORE && GameManager.getState() >=3){
-                restore(block, block.getType(), 30);
+            if(type == Material.DIAMOND_ORE){
+                if(GameManager.getState() >=3){
+                    restore(block, block.getType(), 30);
+                }else{
+                    player.sendTitle(null,ChatColor.RED + "第三阶段后才能获得钻石哦!",5,10,5);
+                }
             }
             if (block.getType() == Material.ENDER_STONE) {
                 Location location = block.getLocation();

@@ -20,7 +20,7 @@ public class playerjoinquit implements Listener {
     public void onJoin(PlayerJoinEvent p) {
         Player player = p.getPlayer();
         if (main.GameManager.getState() <= 3 && !main.TeamManager.isInTeam(player)) {
-            p.setJoinMessage(MA.prefix + player.getName() + "加入了游戏!");
+            p.setJoinMessage(MA.prefix + " " + player.getName() + " 加入了游戏!");
             player.getInventory().clear();
             GameManager.setprimaryitem(player);
         } else {
@@ -36,7 +36,7 @@ public class playerjoinquit implements Listener {
         if(ScoreHelper.hasScore(p.getPlayer())){
             ScoreHelper.removeScore(p.getPlayer());
         }
-        p.setQuitMessage(MA.prefix + player.getName() + "退出了游戏!");
+        p.setQuitMessage(MA.prefix +" " + player.getName() + " 退出了游戏!");
         if(main.GameManager.getState() == 0){
             TeamManager.removeFromTeam(player);
         }

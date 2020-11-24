@@ -14,22 +14,20 @@ public class asyncplayerchatevent implements Listener {
         if(main.TeamManager.isInTeam(player)){
             for(Player playerteam : Bukkit.getOnlinePlayers()){
                 if(main.TeamManager.getTeamList(player) == main.TeamManager.RED){
-                    playerteam.sendMessage(ChatColor.GRAY + "["+ ChatColor.RED + "TEAM" + ChatColor.GRAY + "]" + ChatColor.RESET + player.getName() + ":  " + event.getMessage());
+                    playerteam.sendMessage(ChatColor.GRAY + "["+ ChatColor.RED + "TEAM" + ChatColor.GRAY + "] " + ChatColor.RESET + player.getName() + ": " + event.getMessage());
                 }
                 if(main.TeamManager.getTeamList(playerteam) == main.TeamManager.BLUE){
-                    playerteam.sendMessage(ChatColor.GRAY + "["+ ChatColor.BLUE + "TEAM" + ChatColor.GRAY + "]" + ChatColor.RESET + player.getName() + ":  " + event.getMessage());
+                    playerteam.sendMessage(ChatColor.GRAY + "["+ ChatColor.BLUE + "TEAM" + ChatColor.GRAY + "] " + ChatColor.RESET + player.getName() + ": " + event.getMessage());
                 }
                 if(main.TeamManager.getTeamList(playerteam) == main.TeamManager.GREEN){
-                    playerteam.sendMessage(ChatColor.GRAY + "["+ ChatColor.GREEN + "TEAM" + ChatColor.GRAY + "]" + ChatColor.RESET + player.getName() + ":  " + event.getMessage());
+                    playerteam.sendMessage(ChatColor.GRAY + "["+ ChatColor.GREEN + "TEAM" + ChatColor.GRAY + "] " + ChatColor.RESET + player.getName() + ": " + event.getMessage());
                 }
                 if(main.TeamManager.getTeamList(playerteam) == main.TeamManager.YELLOW){
-                    playerteam.sendMessage(ChatColor.GRAY + "["+ ChatColor.YELLOW + "TEAM" + ChatColor.GRAY + "]" + ChatColor.RESET + player.getName() + ":  " + event.getMessage());
+                    playerteam.sendMessage(ChatColor.GRAY + "["+ ChatColor.YELLOW + "TEAM" + ChatColor.GRAY + "] " + ChatColor.RESET + player.getName() + ": " + event.getMessage());
                 }
             }
         }else{
-            for(Player playerall : Bukkit.getOnlinePlayers()){
-                playerall.sendMessage(ChatColor.GRAY + "["+ ChatColor.AQUA + "ALL" + ChatColor.GRAY + "]" + "  [" + ChatColor.DARK_PURPLE + "LOBBY" + ChatColor.GRAY + "]  " + ChatColor.RESET + player.getName() + ":  " + event.getMessage());
-            }
+            Bukkit.broadcastMessage(ChatColor.GRAY + "["+ ChatColor.AQUA + "ALL" + ChatColor.GRAY + "]" + " [" + ChatColor.DARK_PURPLE + "LOBBY" + ChatColor.GRAY + "] " + ChatColor.RESET + player.getName() + ": " + event.getMessage());
         }
         event.setCancelled(true);
     }

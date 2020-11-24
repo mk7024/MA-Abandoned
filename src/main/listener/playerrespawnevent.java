@@ -13,9 +13,9 @@ public class playerrespawnevent {
         Player player = event.getPlayer();
         if(TeamManager.getTeamHealth(player) == 0){
             player.setGameMode(GameMode.SPECTATOR);
+            player.sendTitle(null,"你的队伍核心已无血量,不可复活!",10,40,10);
         }
         TeamManager.teleportToTeamLocation(player);
-        player.sendTitle(null,"你的队伍核心已无血量,不可复活!",10,40,10);
     }
 
 }

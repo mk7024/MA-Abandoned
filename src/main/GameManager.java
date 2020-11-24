@@ -10,6 +10,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static main.MA.sendTitleToAllPlayers;
@@ -19,10 +20,10 @@ public class GameManager {
     private static short state= 0;
     private static short maxplayersperteam = 8;
     private static short minplayersonline = 1;
-    private static short phase1time = 20;
-    private static short phase2time = 20;
-    private static short phase3time = 20;
-    private static short phase4time = 20;
+    private static short phase1time = 6;
+    private static short phase2time = 6;
+    private static short phase3time = 6;
+    private static short phase4time = 6;
     public static int redteamhealth,yellowteamhealth,greenteamhealth,blueteamhealth;
     public static List<String> teamremain = new ArrayList<String>();
 
@@ -94,20 +95,29 @@ public class GameManager {
         }
         countPhase1();
         updatephase1board();
+        Bukkit.broadcastMessage(ChatColor.YELLOW + "" + ChatColor.BOLD +"阶段1");
+        Bukkit.broadcastMessage(ChatColor.GREEN + "保护好你的核心,同时获得矿物升级你的装备吧!");
     }
 
     private static void startPhase2(){
         countPhase2();
+        Bukkit.broadcastMessage(ChatColor.YELLOW + "" + ChatColor.BOLD +"阶段2");
+        Bukkit.broadcastMessage(ChatColor.GREEN + "你可以破坏敌方阵营的核心了,上吧!");
         state = 2;
     }
 
     private static void startPhase3(){
         countPhase3();
+        Bukkit.broadcastMessage(ChatColor.YELLOW + "" + ChatColor.BOLD +"阶段3");
+        Bukkit.broadcastMessage(ChatColor.GREEN + "钻石已经开放挖掘,谁能守住中心岛呢!");
         state = 3;
     }
 
     private static void startPhase4(){
         countPhase4();
+        Bukkit.broadcastMessage(ChatColor.YELLOW + "" + ChatColor.BOLD +"阶段4");
+        Bukkit.broadcastMessage(ChatColor.GREEN + "最后一个阶段,每120秒核心自动损失一滴血,速战速决!");
+        phase4LosingHealth();
         state = 4;
     }
 
@@ -171,28 +181,29 @@ public class GameManager {
                     }
                 }else cancel();
             }
-        }.runTaskTimer(MA.getInstance(),0,20);
+        }.runTaskTimer(MA.getInstance(),0,10);
     }
 
     public static void setphase1board(Player player){
         ScoreHelper helper = ScoreHelper.createScore(player);
-        helper.setTitle("Mini Annihilation");
-        int min = 0;
-        int sec = 0;
+        int time = 0,min,sec;
         if(state == 1) {
-            int time = phase1time;
-            min = time / 60;
-            sec = (time - time / 60 * 60) % 60;
+            time = phase1time;
         }else if(state == 2){
-            int time = phase2time;
-            min = time / 60;
-            sec = (time - time / 60 * 60) % 60;
+            time = phase2time;
+        }else if(state == 3){
+            time = phase3time;
+        }else if(state == 4){
+            time = phase4time;
         }
-        helper.setSlot(5, "&a阶段" + getState() + "时间:" + ChatColor.RESET + min + ":" + sec);
-        helper.setSlot(4, "&a红队:" + ChatColor.RESET + redteamhealth);
-        helper.setSlot(3, "&a蓝队:" + ChatColor.RESET+ blueteamhealth);
-        helper.setSlot(2, "&a黄队:" + ChatColor.RESET+ yellowteamhealth);
-        helper.setSlot(1, "&a绿队:"+ ChatColor.RESET + greenteamhealth);
+        min = time / 60;
+        sec = (time - time / 60 * 60) % 60;
+        helper.setTitle(ChatColor.RED + "" + ChatColor.BOLD + "核心荣耀");
+        helper.setSlot(5, ChatColor.YELLOW + "" + ChatColor.BOLD + "阶段" + getState() + "时间: " + ChatColor.RESET + min + ":" + sec);
+        helper.setSlot(4, ChatColor.BLUE + "" + ChatColor.BOLD+ "红队: " + ChatColor.GREEN + redteamhealth);
+        helper.setSlot(3, ChatColor.BLUE + "" + ChatColor.BOLD+ "蓝队: " + ChatColor.GREEN+ blueteamhealth);
+        helper.setSlot(2, ChatColor.BLUE + "" + ChatColor.BOLD+ "黄队: " + ChatColor.GREEN+ yellowteamhealth);
+        helper.setSlot(1, ChatColor.BLUE + "" + ChatColor.BOLD+ "绿队: "+ ChatColor.GREEN + greenteamhealth);
     }
 
     private static void countPhase1(){
@@ -205,7 +216,7 @@ public class GameManager {
                     cancel();
                 }
             }
-        }.runTaskTimer(MA.getInstance(),0,20);
+        }.runTaskTimer(MA.getInstance(),20,20);
     }
 
     private static void countPhase2(){
@@ -219,7 +230,7 @@ public class GameManager {
                     cancel();
                 }
             }
-        }.runTaskTimer(MA.getInstance(),0,20);
+        }.runTaskTimer(MA.getInstance(),20,20);
     }
 
     private static void countPhase3(){
@@ -232,7 +243,7 @@ public class GameManager {
                     cancel();
                 }
             }
-        }.runTaskTimer(MA.getInstance(),0,20);
+        }.runTaskTimer(MA.getInstance(),20,20);
     }
 
     private static void countPhase4(){
@@ -240,11 +251,34 @@ public class GameManager {
             @Override
             public void run(){
                 phase4time -= 1;
-                if(phase4time == 0){
+                if(teamremain.size() == 1){
+                    cancel();
+                }
+                if(phase4time == 0 && teamremain.size()!=1){
+                    noWinnerWhoToWin();
                     cancel();
                 }
             }
-        }.runTaskTimer(MA.getInstance(),0,20);
+        }.runTaskTimer(MA.getInstance(),20,20);
+    }
+
+    private static void phase4LosingHealth(){
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                redteamhealth -=1;
+                yellowteamhealth -=1;
+                greenteamhealth -=1;
+                blueteamhealth-=1;
+                if(redteamhealth == 0 || yellowteamhealth == 0|| greenteamhealth ==0|| blueteamhealth == 0){
+                    cancel();
+                }
+            }
+        }.runTaskTimer(MA.getInstance(),20*120,20*120);
+    }
+
+    private static void noWinnerWhoToWin(){
+
     }
 
     private static void setandupdateprimaryboard() {
@@ -254,28 +288,33 @@ public class GameManager {
                 if (getState() == 0) {
                     for (Player player : Bukkit.getServer().getOnlinePlayers()) {
                         ScoreHelper helper = ScoreHelper.createScore(player);
-                        helper.setTitle("Mini Annihilation");
+                        helper.setTitle(ChatColor.RED + "" + ChatColor.BOLD + "核心荣耀");
                         helper.setSlot(5, "&7玩家:" + "&e" + Bukkit.getServer().getOnlinePlayers().size() + "/24");
-                        helper.setSlot(4, "&a红队:" + TeamManager.getTeamSize(RED));
-                        helper.setSlot(3, "&a蓝队:" + TeamManager.getTeamSize(BLUE));
-                        helper.setSlot(2, "&a黄队:" + TeamManager.getTeamSize(YELLOW));
-                        helper.setSlot(1, "&a绿队:" + TeamManager.getTeamSize(GREEN));
+                        helper.setSlot(4, "&a红队人数:" + TeamManager.getTeamSize(RED));
+                        helper.setSlot(3, "&a蓝队人数:" + TeamManager.getTeamSize(BLUE));
+                        helper.setSlot(2, "&a黄队人数:" + TeamManager.getTeamSize(YELLOW));
+                        helper.setSlot(1, "&a绿队人数:" + TeamManager.getTeamSize(GREEN));
                     }
                 }else cancel();
             }
         }.runTaskTimer(MA.getInstance(),0,20);
     }
 
-    private static void checkWhoToWin(){
-        new BukkitRunnable(){
-            @Override
-            public void run(){
-                if(teamremain.size() == 1){
-                    System.out.println("最终获胜的是" + teamremain.toString());
-                    cancel();
-                }
+    private static void checkWhoToWin() {
+        if (teamremain.size() == 1) {
+            if (teamremain.equals("RED")) {
+                main.TeamManager.playFirework(TeamManager.RED);
             }
-        }.runTaskTimer(MA.getInstance(),0,20);
+            if (teamremain.equals("BLUE")) {
+                main.TeamManager.playFirework(TeamManager.BLUE);
+            }
+            if (teamremain.equals("GREEN")) {
+                main.TeamManager.playFirework(TeamManager.GREEN);
+            }
+            if (teamremain.equals("YELLOW")) {
+                main.TeamManager.playFirework(TeamManager.YELLOW);
+            }
+        }
     }
 
     public static void setprimaryitem(Player p){
